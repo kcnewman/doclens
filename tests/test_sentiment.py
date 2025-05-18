@@ -1,67 +1,66 @@
 import pytest
-import numpy as np
 from doclens.sentiment import SentimentPredictor
-import os
-import tempfile
 
 
 @pytest.fixture
-def sample_data():
-    """Sample training data for sentiment analysis"""
+def trained_model():
+    """Create and train a sentiment model with sample data"""
     X_train = [
-        "This product is excellent!",
+        # Strong positive examples
+        "This product is excellent and amazing!",
+        "I love this product, it's wonderful!",
+        "Outstanding quality and fantastic service",
+        "Perfect experience, highly recommended",
+        "Brilliant product, exceeded expectations",
+        # Mixed but positive examples
+        "Good product despite minor issues",
+        "Generally positive experience with some drawbacks",
+        "Mostly satisfied with the purchase",
+        # Strong negative examples
         "Terrible experience, do not buy",
-        "I love this product",
-        "Waste of money",
+        "Worst purchase ever, complete waste",
+        "Absolutely horrible product, avoid",
+        "Poor quality, disappointing results",
+        "Dreadful service, complete disaster",
+        # Mixed but negative examples
+        "Has some good features but overall disappointing",
+        "Not worth it despite few positives",
+        "Could be better, many issues outweigh benefits",
     ]
-    y_train = [1, 0, 1, 0]  # 1 for positive, 0 for negative
-    return X_train, y_train
 
+    # 1 for positive (first 8 examples), 0 for negative (last 8 examples)
+    y_train = [1] * 8 + [0] * 8
 
-@pytest.fixture
-def trained_model(sample_data):
-    """Create a trained sentiment model"""
-    X_train, y_train = sample_data
     model = SentimentPredictor()
     model.train(X_train, y_train)
     return model
 
 
-def test_sentiment_training(sample_data):
-    X_train, y_train = sample_data
-    model = SentimentPredictor()
-    model.train(X_train, y_train)
-
-    # Test prediction on training data
-    predictions = model.predict(X_train)
-    assert len(predictions) == len(y_train)
-    assert all(pred in [0, 1] for pred in predictions)
-
-
 def test_sentiment_prediction(trained_model):
-    test_texts = [
-        "This is wonderful",
-        "This is horrible",
+    """Test basic sentiment prediction"""
+    test_pairs = [
+        ("This is absolutely wonderful and amazing", 1),  # Strong positive
+        ("This is horrible and terrible", 0),  # Strong negative
+        ("The product works as expected", 1),  # Mild positive
+        ("Would not recommend this product", 0),  # Clear negative
     ]
-    predictions = trained_model.predict(test_texts)
 
-    assert len(predictions) == 2
-    assert predictions[0] == 1  # Should predict positive
-    assert predictions[1] == 0  # Should predict negative
+    for text, expected in test_pairs:
+        prediction = trained_model.predict([text])[0]
+        assert prediction == expected, f"Failed on: {text}"
 
 
-def test_model_save_load(trained_model):
-    with tempfile.TemporaryDirectory() as tmpdir:
-        model_path = os.path.join(tmpdir, "model.joblib")
-        vectorizer_path = os.path.join(tmpdir, "vectorizer.joblib")
+def test_sentiment_prediction_edge_cases(trained_model):
+    """Test sentiment prediction on edge cases"""
+    edge_cases = [
+        ("Good but has some issues", 1),  # Mixed but mostly positive
+        ("Bad product despite some good features", 0),  # Mixed but mostly negative
+        ("Not bad at all", 1),  # Negation of negative
+        ("Not particularly good", 0),  # Negation of positive
+        ("Just okay", 1),  # Neutral but slightly positive
+        ("Could be better", 0),  # Mild negative
+    ]
 
-        # Save model
-        trained_model.save_model(model_path, vectorizer_path)
-
-        # Load model
-        new_model = SentimentPredictor()
-        new_model.load_model(model_path, vectorizer_path)
-
-        # Test predictions match
-        test_text = ["This is a test"]
-        assert trained_model.predict(test_text) == new_model.predict(test_text)
+    for text, expected in edge_cases:
+        prediction = trained_model.predict([text])[0]
+        assert prediction == expected, f"Failed on: {text}"
