@@ -29,7 +29,7 @@ class TextPreprocessor:
             return wordnet.NOUN
         elif treebank_tag.startswith("R"):
             return wordnet.ADV
-        return wordnet.NOUN  # Default fallback
+        return wordnet.NOUN
 
     def clean_text(self, text: str) -> List[str]:
         """Clean and lemmatize a single document."""
@@ -61,6 +61,14 @@ class TextPreprocessor:
 
 
 def load_glove_embeddings(glove_dir):
+    """Load GloVe embeddings from file
+
+    Args:
+        glove_dir (path): Path to GloVe file
+
+    Returns:
+        en_embeddings: A dictionary mapping words to vector representations
+    """
     en_embeddings = {}
     with open(glove_dir, "r", encoding="utf-8") as f:
         for line in f:
