@@ -1,5 +1,12 @@
 import pytest
-from doclens.search import create_tfidf_matrix, find_top_k_similar_docs
+from sklearn.feature_extraction.text import TfidfVectorizer
+from doclens.search import search_documents
+
+
+def create_tfidf_matrix(docs):
+    vectorizer = TfidfVectorizer()
+    matrix = vectorizer.fit_transform(docs)
+    return vectorizer, matrix
 
 
 def test_tfidf_creation():
@@ -17,9 +24,11 @@ def test_similarity_search():
     ]
     vectorizer, matrix = create_tfidf_matrix(docs)
     query = "What programming languages exist?"
-    indices, similarities = find_top_k_similar_docs(query, matrix, vectorizer, k=2)
+    ind2doc_dict = {i: doc for i, doc in enumerate(docs)}
+    en_embeddings = {}
+    results = search_documents(query, matrix, ind2doc_dict, en_embeddings, top_k=2)
+    indices, similarities = zip(*results)
 
     assert len(indices) == 2
     assert len(similarities) == 2
-    # First two docs should be more similar than the third
     assert all(i in [0, 1] for i in indices)
