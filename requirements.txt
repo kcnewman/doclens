@@ -5,4 +5,5 @@ matplotlib
 seaborn
 nltk
 datasets
+joblib
 -e .
