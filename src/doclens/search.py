@@ -60,3 +60,27 @@ def cosine_similarity(vec1, vec2):
     if norm1 == 0 or norm2 == 0:
         return 0
     return dot / (norm1 * norm2)
+
+
+def search_documents(query, document_vectors, ind2doc_dict, en_embeddings, top_k=3):
+    """Search for most relevant documents for a given query
+
+    Args:
+        query (str): Query text
+        document_vectors (np.array): Document embedding matrix
+        ind2doc_dict (dict): Index to document mapping
+        en_embeddings (dict): Word embedding dictionary
+        top_k (int, optional): Number of results. Defaults to 3.
+
+    Returns:
+        list: List of (doc_index, similarity_score) tuples
+    """
+    query_embedding = get_doc_embedding(query, en_embeddings)
+
+    similarities = []
+    for i, doc_vec in enumerate(document_vectors):
+        sim = cosine_similarity(query_embedding, doc_vec)
+        similarities.append((i, sim))
+
+    similarities.sort(key=lambda x: x[1], reverse=True)
+    return similarities[:top_k]
