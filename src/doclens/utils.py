@@ -79,12 +79,19 @@ def load_glove_embeddings(glove_dir):
 
 
 class LoadData:
-    def __init__(self, data_dir="../../data/raw"):
-        self.train_path = os.path.join(str(data_dir), "amazon_polarity_train_sample.csv")
-        self.test_path = os.path.join(str(data_dir), "amazon_polarity_test_sample.csv")
+    def __init__(self, data_dir="data/raw"):
+        root_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+        self.train_path = os.path.join(
+            root_dir, data_dir, "amazon_polarity_train_sample.csv"
+        )
+        self.test_path = os.path.join(
+            root_dir, data_dir, "amazon_polarity_test_sample.csv"
+        )
+
         if not os.path.exists(self.train_path) or not os.path.exists(self.test_path):
             raise FileNotFoundError(
-                "Both 'train and test files must exist in {data_dir}"
+                f"Both train and test files must exist in {data_dir}. "
+                "Run 'python scripts/download_data.py' first."
             )
 
     def getdata(self):

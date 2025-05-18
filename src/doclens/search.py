@@ -62,7 +62,7 @@ def cosine_similarity(vec1, vec2):
     return dot / (norm1 * norm2)
 
 
-def search_documents(query, document_vectors, ind2doc_dict, en_embeddings, top_k=3):
+def search_documents(query, document_vectors, ind2doc_dict, en_embeddings, top_k=5):
     """Search for most relevant documents for a given query
 
     Args:
