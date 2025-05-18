@@ -8,7 +8,6 @@ from nltk import pos_tag
 from nltk.corpus import stopwords, wordnet
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import TweetTokenizer
-from sklearn.neighbors import NearestNeighbors
 
 
 class TextPreprocessor:
@@ -110,59 +109,3 @@ class LoadData:
         X_train = self.combine_text_features(X_train_raw)
         X_test = self.combine_text_features(X_test_raw)
         return X_train, X_test, y_train, y_test
-
-
-def knn_index(embeddings, n_neighbors=5):
-    """_summary_
-
-    Args:
-        embeddings (_type_): _description_
-        n_neighbors (int, optional): _description_. Defaults to 5.
-    """
-    knn = NearestNeighbors(n_neighbors=n_neighbors, algorithm="auto", metric="cosine")
-    knn.fit(embeddings)
-    return knn
-
-
-def build_freqs(texts, ys):
-    """Build frequency tables
-    Args:
-        text: A list of str
-        ys: An array matching sentiment
-    Output:
-        freqs (dict): Dictionary mapping each word(word, sentiment) pair to its frequency
-    """
-    yls = list(np.squeeze(ys).tolist()) if not isinstance(ys, list) else ys
-    freqs = {}
-    processor = TextPreprocessor()
-    for y, text in zip(yls, texts):
-        tokens = processor.preprocess_docs(text)
-        for word in tokens:
-            pair = (word, y)
-            freqs[pair] = freqs.get(pair, 0) + 1
-    return freqs
-
-
-def extract_features(train_x, freqs):
-    """
-    Extract features from an array of texts.
-
-    Args:
-        train_x (list or np.array): a list or array of texts (tweets).
-        freqs (dict): a dictionary mapping (word, sentiment) pairs to their frequency counts.
-
-    Returns:
-        X (np.ndarray): a 2D numpy array with shape (number_of_texts, vocabulary_size)
-    """
-    processor = TextPreprocessor()
-    tokens_l = [processor.preprocess_docs(tweet) for tweet in train_x]
-    vocab = sorted(set([word for word, _ in freqs.keys()]))
-    word_idx = {word: i for i, word in enumerate(vocab)}
-    n_samples = len(tokens_l)
-    n_features = len(vocab)
-    X = np.zeros((n_samples, n_features))
-    for i, tokens in enumerate(tokens_l):
-        for word in tokens:
-            if word in word_idx:
-                X[i, word_idx[word]] += 1
-    return X

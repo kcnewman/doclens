@@ -1,18 +1,45 @@
 from sklearn.cluster import KMeans
-from sklearn.decomposition import PCA
+from sklearn.neighbors import NearestNeighbors
 
 
-def cluster_documents(tfidf_matrix, n_clusters=5):
-    """Cluster documents using KMeans"""
-    kmeans = KMeans(n_clusters=n_clusters, random_state=42)
-    cluster_labels = kmeans.fit_predict(tfidf_matrix)
+def knn_index(embeddings, n_neighbors=5):
+    """Create KNN index for similarity search
 
-    return kmeans, cluster_labels
+    Args:
+        embeddings (_typnp.arraye_): Document embedding matrix
+        n_neighbors (int, optional): Number of neighbors to consider. Defaults to 5.
+
+    Returns:
+        KNeighborsClassifier: Fitted KNN model
+    """
+    knn = NearestNeighbors(n_neighbors=n_neighbors, algorithm="auto", metric="cosine")
+    knn.fit(embeddings)
+    return knn
 
 
-def reduce_dimensions(tfidf_matrix, n_components=2):
-    """Reduce dimensionality using PCA"""
-    pca = PCA(n_components=n_components)
-    reduced_matrix = pca.fit_transform(tfidf_matrix.toarray())
+def cluster_documents(embeddings, n_clusters=5, random_state=42):
+    """Cluster documents using KMeans
 
-    return pca, reduced_matrix
+    Args:
+        embeddings (np.array): Document embedding matrix
+        n_clusters (int, optional): Number of clusters. Defaults to 5.
+        random_state (int, optional): Random seed for reproducibility. Defaults to 42.
+
+    Returns:
+        tuple: (KMeans model, document cluster labels)
+    """
+    kmeans = KMeans(n_clusters=n_clusters, random_state=random_state)
+    labels = kmeans.fit_predict(embeddings)
+    return kmeans, labels
+
+
+def get_cluster_centers(kmeans_model):
+    """Get cluster centers from KMeans model.
+
+    Args:
+        kmeans_model: Fitted KMeans model
+
+    Returns:
+        np.array: Cluster centers
+    """
+    return kmeans_model.cluster_centers_
