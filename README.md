@@ -131,9 +131,9 @@ MIT License
 
 ## Contact
 
-- Author: Your Name
-- Email: your.email@example.com
-- GitHub: [@your-username](https://github.com/your-username)
+- Author: Newman Kelvin Cecil
+- Email: newmankelvin14@gmail.com
+- GitHub: [@kcnewman](https://github.com/kcnewman)
 
 ## Acknowledgements
 
