@@ -41,27 +41,6 @@ pip install -r requirements.txt
 python data/dataloader.py  # Downloads Amazon Polarity dataset
 ```
 
-## Project Structure
-
-```
-doclens/
-├── data/                      # Data directory
-│   ├── raw/                  # Raw dataset files
-│   └── glove/               # GloVe embeddings
-├── results/                  # Output directory
-│   ├── models/              # Saved models
-│   └── visualizations/      # Generated visualizations
-├── src/doclens/             # Source code
-│   ├── clustering.py        # Document clustering
-│   ├── search.py           # Semantic search
-│   ├── sentiment.py        # Sentiment prediction
-│   ├── visualization.py    # Visualization utilities
-│   └── utils.py           # Helper functions
-├── tests/                   # Unit tests
-├── notebooks/              # Jupyter notebooks
-└── requirements.txt        # Project dependencies
-```
-
 ## Usage
 
 1. Start the interactive search interface:
