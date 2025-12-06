@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "doclens"
+version = "0.0.1"
+description = "A document search, clustering and sentiment prediction pipeline"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+  { name = "Kelvin Newman", email = "newmankelvin14@gmail.com" }
+]
+dependencies = [
+  "scikit-learn",
+  "pandas",
+  "numpy",
+  "matplotlib",
+  "seaborn",
+  "nltk",
+  "datasets",
+  "joblib",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

@@ -1,9 +1,0 @@
-scikit-learn
-pandas
-numpy
-matplotlib
-seaborn
-nltk
-datasets
-joblib
--e .
