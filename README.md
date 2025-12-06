@@ -22,20 +22,14 @@ git clone https://github.com/kcnewman/doclens.git
 cd doclens
 ```
 
-2. Create a virtual environment (recommended):
+2. This project require uv.
 
 ```bash
-conda create -n doclens python=3.8
-conda activate doclens
+uv init
+uv sync
 ```
 
-3. Install dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-4. Download required data:
+3. Download required data:
 
 ```bash
 python data/dataloader.py  # Downloads Amazon Polarity dataset
@@ -46,13 +40,13 @@ python data/dataloader.py  # Downloads Amazon Polarity dataset
 1. Start the interactive search interface:
 
 ```bash
-python main.py
+uv run main.py
 ```
 
 2. Optional command-line arguments:
 
 ```bash
-python main.py --glove path/to/glove.txt --clusters 5
+uv run main.py --glove path/to/glove.txt --clusters 5
 ```
 
 3. Enter search queries when prompted:
